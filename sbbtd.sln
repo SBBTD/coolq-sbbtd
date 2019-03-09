@@ -5,8 +5,6 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "com.sbbtd.sbbtd.sbbtd", "CQPdemo\CQPDemo.vcxproj", "{9D36EAFF-6BF0-4BDE-A20C-5BCB92DE79D6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "td_debug", "td_debug\td_debug.vcxproj", "{99062D8B-B3F7-4761-AAAA-971D26178E29}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -21,14 +19,6 @@ Global
 		{9D36EAFF-6BF0-4BDE-A20C-5BCB92DE79D6}.Release|Win32.ActiveCfg = Release|Win32
 		{9D36EAFF-6BF0-4BDE-A20C-5BCB92DE79D6}.Release|Win32.Build.0 = Release|Win32
 		{9D36EAFF-6BF0-4BDE-A20C-5BCB92DE79D6}.Release|x64.ActiveCfg = Release|Win32
-		{99062D8B-B3F7-4761-AAAA-971D26178E29}.Debug|Win32.ActiveCfg = Debug|Win32
-		{99062D8B-B3F7-4761-AAAA-971D26178E29}.Debug|Win32.Build.0 = Debug|Win32
-		{99062D8B-B3F7-4761-AAAA-971D26178E29}.Debug|x64.ActiveCfg = Debug|x64
-		{99062D8B-B3F7-4761-AAAA-971D26178E29}.Debug|x64.Build.0 = Debug|x64
-		{99062D8B-B3F7-4761-AAAA-971D26178E29}.Release|Win32.ActiveCfg = Release|Win32
-		{99062D8B-B3F7-4761-AAAA-971D26178E29}.Release|Win32.Build.0 = Release|Win32
-		{99062D8B-B3F7-4761-AAAA-971D26178E29}.Release|x64.ActiveCfg = Release|x64
-		{99062D8B-B3F7-4761-AAAA-971D26178E29}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
