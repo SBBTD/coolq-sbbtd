@@ -5,9 +5,9 @@ cqsdk-vc来自[`https://github.com/CoolQ/cqsdk-vc`](https://github.com/CoolQ/cqs
 文件说明
 --------
 
-您可以编译为 `com.example.democ.dll`，与 `CQPdemo/com.example.democ.json` 一起放置在 酷Q 的 app 目录下测试
+您可以编译为 `com.sbbtd.sbbtd.sbbtd.dll`，与 `coolq-sbbtd/com.sbbtd.sbbtd.sbbtd.json` 一起放置在 酷Q 的 app 目录下测试
 
-`CQPdemo/com.example.democ.json` - 样例应用的对应信息文件，包含应用的基础信息、事件列表等，请放置在 酷Q 的 app 目录下（无需使用的事件、菜单、权限请在此删除）
+`coolq-sbbtd/com.sbbtd.sbbtd.sbbtd.json` - 样例应用的对应信息文件，包含应用的基础信息、事件列表等，请放置在 酷Q 的 app 目录下
 
 `CQPdemo/cqp.h` - 酷Q SDK 头文件，通常无需修改
 
