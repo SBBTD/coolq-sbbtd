@@ -25,6 +25,7 @@
 以下为原SDK说明（有删改）
 --------
 酷Q V9
+
 cqsdk-vc来自[`https://github.com/CoolQ/cqsdk-vc`](https://github.com/CoolQ/cqsdk-vc)
 
 文件说明
