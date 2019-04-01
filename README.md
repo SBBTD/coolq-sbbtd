@@ -22,9 +22,9 @@ cqsdk-vc来自[`https://github.com/CoolQ/cqsdk-vc`](https://github.com/CoolQ/cqs
 
 `coolq-sbbtd/com.sbbtd.sbbtd.sbbtd.json` - 样例应用的对应信息文件，包含应用的基础信息、事件列表等，请放置在 酷Q 的 app 目录下
 
-`CQPdemo/cqp.h` - 酷Q SDK 头文件，通常无需修改
+`coolq-sbbtd/cqp.h` - 酷Q SDK 头文件，通常无需修改
 
-`CQPdemo/CQP.lib` - CQP.dll 的动态连接 .lib 文件，便于 C、C++ 等调用 酷Q 的方法。
+`coolq-sbbtd/CQP.lib` - CQP.dll 的动态连接 .lib 文件，便于 C、C++ 等调用 酷Q 的方法。
 
 酷Q官方网站
 --------
