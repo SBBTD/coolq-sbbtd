@@ -11,6 +11,7 @@ using namespace std;
 #define xbGroupList_Size 256
 #define tmpstr_Length 1000
 
+/*线报链表节点*/
 struct monitorKey {
 	char key[20];
 	int64_t group;

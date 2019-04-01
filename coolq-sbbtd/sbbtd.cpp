@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "sbbtd.h"
 
+/*检测文件是否存在并返回读文件流*/
 fstream * openfile(const char * filename)
 {
 	ofstream* ofs = new ofstream(filename, ios::app);
@@ -13,6 +14,7 @@ fstream * openfile(const char * filename)
 	return filest;
 }
 
+/*读单列数字文件*/
 int readfile(fstream * stm, int64_t * list)
 {
 	int n = 0;
@@ -27,6 +29,7 @@ int readfile(fstream * stm, int64_t * list)
 	return n;
 }
 
+/*生成写入文件流*/
 ofstream * writefile(const char * filename)
 {
 	ofstream* ofs = new ofstream(filename, ios::app);
@@ -38,6 +41,7 @@ ofstream * writefile(const char * filename)
 	return ofs;
 }
 
+/*检测数字是否在某以-1结束的数字数组中*/
 bool is_NumInList(int64_t qq, int64_t * list)
 {
 	int n = 0;
@@ -46,6 +50,7 @@ bool is_NumInList(int64_t qq, int64_t * list)
 			return true;
 	return false;
 }
+
 /*弃用
 monitorKey * getMonitor(monitorKeyList list, char * key, char* msg)
 {
@@ -59,6 +64,7 @@ monitorKey * getMonitor(monitorKeyList list, char * key, char* msg)
 	return nullptr;
 }*/
 
+/*添加线报关键词，返回值说明见调用处提示语*/
 int addXianbaoKeyword(monitorKeyList list, char * key, int64_t group, int64_t qq)
 {
 	if (strlen(key) > 16 || strlen(key) < 1)return 1;
@@ -91,12 +97,14 @@ int addXianbaoKeyword(monitorKeyList list, char * key, int64_t group, int64_t qq
 	return 0;
 }
 
+/*删除线报，delall=true时忽略key参数*/
 int delXianbaoKeyword(monitorKeyList &list, char* key, int64_t group, int64_t qq, bool delall)
 {
 	if (strlen(key) > 16 || strlen(key) < 1)return 1;
 	int rtn = 2;
 	auto p = list;
 	while (p->next != nullptr) {
+		//判断节点是否需要删除
 		if (p->group == group && p->qq == qq && (delall || !strcmp(p->key, key))) {
 			if (p->pre) {
 				p->pre->next = p->next;
@@ -120,6 +128,7 @@ int delXianbaoKeyword(monitorKeyList &list, char* key, int64_t group, int64_t qq
 	return delall ? 3 : rtn;
 }
 
+/*将线报链表写入文件*/
 int saveXianbaoKeyword(monitorKeyList list)
 {
 	auto p = list;

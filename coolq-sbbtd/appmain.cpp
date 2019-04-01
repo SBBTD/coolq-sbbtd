@@ -16,6 +16,7 @@ int ac = -1; //AuthCode 调用酷Q的方法时需要用到
 bool enabled = false;
 
 bool bansaohuo = false;
+//这两个均以-1表示数组结尾
 int64_t blockQQList[blockQQList_Size];
 int64_t xbGroupList[xbGroupList_Size];
 monitorKeyList KeyList = new monitorKey;
@@ -124,6 +125,7 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t msgId, int64_t fr
 	if (is_NumInList(fromGroup, xbGroupList)) {
 		char groupName[20];
 		switch (fromGroup) {
+		//群名称，必须少于9个汉字
 		case 945583797:strcpy(groupName, "哈佛大学线报"); break;
 		case 367943101:strcpy(groupName, "三表哥线报群"); break;
 		case 699788908:strcpy(groupName, "冷瞳活动分享"); break;
@@ -143,6 +145,7 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t msgId, int64_t fr
 			p = p->next;
 		}
 	}
+	//宿舍群管理相关处理
 	if (fromGroup == 683750159) {
 		if (bansaohuo && fromQQ == 593424943) {
 			char str[tmpstr_Length];
