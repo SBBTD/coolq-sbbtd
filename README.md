@@ -1,17 +1,29 @@
 自用酷Q插件简介
 --------
-自用酷Q插件，线报追踪系统，方便我和舍友等用户买到心仪的便宜商品，而不必每天盯着一堆线报群筛选。
-支持配置文件实时保存。
-已实测一个月以上稳如老狗。
+1.线报追踪系统，方便我和舍友等用户买到心仪的便宜商品，而不必每天盯着一堆线报群筛选。
 
-其他功能：在自己宿舍群里为所欲为，指令快速禁言舍友（Σ(ŎдŎ|||)ﾉﾉ）
+配置文件实时保存。已实测一个月以上稳如老狗。
+
+2.拦截舍友的机器人的消息，阻止后续消息处理，防止两个机器人死循环打起来。。。
+
+配置文件说明
+--------
+
+1.`settings_blockqq.ini`  每行一个qq号，拦截消息的列表
+
+2.`settings_xianbaogroup.ini` 每行一个群号，线报群的列表
+
+3.`settings_monitor.ini`  每行为`关键词 所在群号 qq号`正在追踪的线报关键词列表
+
+其他功能
+--------
+在自己宿舍群里为所欲为，指令快速禁言舍友（Σ(ŎдŎ|||)ﾉﾉ）
 
 更多功能自己想到会加，还有很多需要优化的地方，请多指教
 
 
-以下为原SDK说明（相关文件名已替换）
+以下为原SDK说明（有删改）
 --------
-# cqsdk-vc [![Build status](https://ci.appveyor.com/api/projects/status/b45ik9dass1rnrnj?svg=true)](https://ci.appveyor.com/project/Coxxs/cqsdk-vc)
 酷Q V9
 cqsdk-vc来自[`https://github.com/CoolQ/cqsdk-vc`](https://github.com/CoolQ/cqsdk-vc)
 
