@@ -51,6 +51,13 @@ bool is_NumInList(int64_t qq, int64_t * list)
 	return false;
 }
 
+/*判断一个字符是否是字母或数字（A-Z,a-z,0-9）*/
+bool is_abc123(char chr)
+{
+	if ((chr >= 'a' && chr <= 'z') || (chr >= 'A' && chr <= 'Z') || (chr >= '0' && chr <= '9'))return true;
+	return false;
+}
+
 /*弃用
 monitorKey * getMonitor(monitorKeyList list, char * key, char* msg)
 {
@@ -64,7 +71,15 @@ monitorKey * getMonitor(monitorKeyList list, char * key, char* msg)
 	return nullptr;
 }*/
 
-/*添加线报关键词，返回值说明见调用处提示语*/
+/*
+添加线报关键词
+返回值说明
+0-成功
+1-长度错误
+2-有包含关系且已更新
+3-黑名单词汇
+default-内部错误
+*/
 int addXianbaoKeyword(monitorKeyList list, char * key, int64_t group, int64_t qq)
 {
 	if (strlen(key) > 16 || strlen(key) < 1)return 1;
@@ -97,7 +112,14 @@ int addXianbaoKeyword(monitorKeyList list, char * key, int64_t group, int64_t qq
 	return 0;
 }
 
-/*删除线报，delall=true时忽略key参数*/
+/*删除线报，delall=true时忽略key参数，此时请任意传入一个char*
+返回值说明
+0-移除单个成功
+1-长度错误
+2-未找到关键词
+3-移除全部成功
+default-内部错误
+*/
 int delXianbaoKeyword(monitorKeyList &list, char* key, int64_t group, int64_t qq, bool delall)
 {
 	if (strlen(key) > 16 || strlen(key) < 1)return 1;

@@ -16,9 +16,11 @@ int ac = -1; //AuthCode 调用酷Q的方法时需要用到
 bool enabled = false;
 
 bool bansaohuo = false;
+
 //这两个均以-1表示数组结尾
 int64_t blockQQList[blockQQList_Size];
 int64_t xbGroupList[xbGroupList_Size];
+
 monitorKeyList KeyList = new monitorKey;
 
 /*
@@ -45,9 +47,9 @@ CQEVENT(int32_t, Initialize, 4)(int32_t AuthCode) {
 * 如非必要，不建议在这里加载窗口。（可以添加菜单，让用户手动打开窗口）
 */
 CQEVENT(int32_t, __eventStartup, 0)() {
-	memset(blockQQList, 0, sizeof(int64_t)*blockQQList_Size);
+	memset(blockQQList, 0, sizeof(int64_t) * blockQQList_Size);
 	blockQQList[0] = -1;
-	memset(xbGroupList, 0, sizeof(int64_t)*xbGroupList_Size);
+	memset(xbGroupList, 0, sizeof(int64_t) * xbGroupList_Size);
 	xbGroupList[0] = -1;
 	KeyList->group = KeyList->qq = KeyList->key[0] = 0;
 	KeyList->pre = KeyList->next = nullptr;
@@ -109,7 +111,7 @@ CQEVENT(int32_t, __eventDisable, 0)() {
 * Type=21 私聊消息
 * subType 子类型，11/来自好友 1/来自在线状态 2/来自群 3/来自讨论组
 */
-CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t msgId, int64_t fromQQ, const char *msg, int32_t font) {
+CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t msgId, int64_t fromQQ, const char* msg, int32_t font) {
 
 	//如果要回复消息，请调用酷Q方法发送，并且这里 return EVENT_BLOCK - 截断本条消息，不再继续处理  注意：应用优先级设置为"最高"(10000)时，不得使用本返回值
 	//如果不回复消息，交由之后的应用/过滤器处理，这里 return EVENT_IGNORE - 忽略本条消息
@@ -120,24 +122,66 @@ CQEVENT(int32_t, __eventPrivateMsg, 24)(int32_t subType, int32_t msgId, int64_t 
 /*
 * Type=2 群消息
 */
-CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t msgId, int64_t fromGroup, int64_t fromQQ, const char *fromAnonymous, char *msg, int32_t font) {
+CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t msgId, int64_t fromGroup, int64_t fromQQ, const char* fromAnonymous, char* msg, int32_t font) {
 	if (is_NumInList(fromQQ, blockQQList))return EVENT_BLOCK;
+
+	char msg_f[msg_maxLength];
+	int msglen = strlen(msg);
+	int index = 0;
+	bool delhalfchar = false;
+
+	for (int i = 0; i < msglen; i++) {
+		//链接或淘口令是否结束，即半角字符串结束
+		if (delhalfchar && msg[i] < 0) {
+			//判断淘口令结束的￥符号
+			if (i < msglen - 1 && msg[i] == -93 && msg[i + 1] == -92) {
+				delhalfchar = false;
+				i++; continue;
+			}
+			delhalfchar = false;
+		}
+		if (delhalfchar)continue;
+		//将“零”转换为'0'
+		if (i < msglen - 1 && msg[i] == -63 && msg[i + 1] == -29) {
+			msg[index++] = '0';
+			continue;
+		}
+		//判断http(s)开头链接
+		else if (i < msglen - 3 && msg[i] == 'h' && msg[i + 1] == 't' && msg[i + 2] == 't' && msg[i + 3] == 'p') {
+			delhalfchar = true;
+			continue;
+		}
+		//判断淘口令开头的￥符号
+		else if (i < msglen - 2 && msg[i] == -93 && msg[i + 1] == -92) {
+			delhalfchar = true;
+			i++; continue;
+		}
+		//大写转小写
+		if (msg[i] >= 'A' && msg[i] <= 'Z') {
+			msg_f[index++] = msg[i] + 'a' - 'A';
+			continue;
+		}
+		//其他字符保持原样
+		else msg_f[index++] = msg[i];
+	}
+	msg_f[index++] = '\0';
+
 	if (is_NumInList(fromGroup, xbGroupList)) {
 		char groupName[20];
 		switch (fromGroup) {
 		//群名称，必须少于9个汉字
-		case 945583797:strcpy(groupName, "哈佛大学线报"); break;
-		case 367943101:strcpy(groupName, "三表哥线报群"); break;
-		case 699788908:strcpy(groupName, "冷瞳活动分享"); break;
-		case 782790346:strcpy(groupName, "Ben笨线报群"); break;
-		case 970458851:strcpy(groupName, "King线报活动"); break;
-		case 740897949:strcpy(groupName, "疯子vip共享"); break;
-		case 707965661:strcpy(groupName, "debug用群"); break;
-		default:strcpy(groupName, to_string(fromGroup).c_str()); break;
+		case 945583797:strcpy_s(groupName, "哈佛大学线报"); break;
+		case 367943101:strcpy_s(groupName, "三表哥线报群"); break;
+		case 699788908:strcpy_s(groupName, "冷瞳活动分享"); break;
+		case 782790346:strcpy_s(groupName, "Ben笨线报群"); break;
+		case 970458851:strcpy_s(groupName, "King线报活动"); break;
+		case 740897949:strcpy_s(groupName, "疯子vip共享"); break;
+		case 707965661:strcpy_s(groupName, "debug用群"); break;
+		default:strcpy_s(groupName, to_string(fromGroup).c_str()); break;
 		}
 		auto p = KeyList;
 		while (p->next != nullptr) {
-			if (strstr(msg, p->key)) {
+			if (strstr(msg_f, p->key)) {
 				char str[tmpstr_Length];
 				sprintf_s(str, "[CQ:at,qq=%lld]\n线报“%s”来自%s\n%s", p->qq, p->key, groupName, msg);
 				CQ_sendGroupMsg(ac, p->group, str);
@@ -151,6 +195,7 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t msgId, int64_t fr
 			char str[tmpstr_Length];
 			int time = 10;
 			sprintf_s(str, "[CQ:at,qq=%lld]发言限1条/%d秒。\n已禁言%ds！", fromQQ, time, time);
+			//CQ_sendPrivateMsg(ac, fromQQ, "骚货别逼逼！再逼逼永封！");
 			CQ_setGroupBan(ac, fromGroup, fromQQ, time);
 			CQ_sendGroupMsg(ac, fromGroup, str);
 		}
@@ -165,22 +210,25 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t msgId, int64_t fr
 			}
 		}
 	}
+
+	//线报关键词处理
 	char command_add[10] = "线报";
 	char command_del[10] = "移除线报";
-	if (strstr(msg, command_add) == msg) {
+	char command_list[10] = "当前线报";
+	if (strstr(msg, command_add) == msg) {//添加线报
 		char str[tmpstr_Length];
 		int t = addXianbaoKeyword(KeyList, msg + strlen(command_add), fromGroup, fromQQ);
 		saveXianbaoKeyword(KeyList);
 		switch (t) {
-		case 0:sprintf_s(str, "[CQ:at,qq=%lld]\n已添加线报关键词“%s”，将转发线报至当前群，并通知QQ", fromQQ, msg + strlen(command_add));break;
-		case 1:sprintf_s(str, "添加线报关键词失败，应为汉字1至8个");break;
-		case 2:sprintf_s(str, "与现有关键词有包含关系，已更新为较短关键词");break;
+		case 0:sprintf_s(str, "[CQ:at,qq=%lld]\n已添加线报关键词“%s”，将转发线报至当前群，并通知QQ", fromQQ, msg + strlen(command_add)); break;
+		case 1:sprintf_s(str, "添加线报关键词失败，应为汉字1至8个"); break;
+		case 2:sprintf_s(str, "与现有关键词有包含关系，已更新为较短关键词"); break;
 		case 3:sprintf_s(str, "添加失败，黑名单词汇"); break;
-		default:sprintf_s(str, "添加线报关键词失败，内部错误");break;
+		default:sprintf_s(str, "添加线报关键词失败，内部错误"); break;
 		}
 		CQ_sendGroupMsg(ac, fromGroup, str);
 	}
-	else if (strstr(msg, command_del) == msg) {
+	else if (strstr(msg, command_del) == msg) {//删除线报
 		int t;
 		char str[tmpstr_Length];
 		if (!strcmp(msg + strlen(command_del), "全部"))t = delXianbaoKeyword(KeyList, "null", fromGroup, fromQQ, true);
@@ -195,6 +243,20 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t msgId, int64_t fr
 		}
 		CQ_sendGroupMsg(ac, fromGroup, str);
 	}
+	else if (strstr(msg, command_list) == msg) {//查询当前线报
+		auto p = KeyList;
+		char str1[tmpstr_Length];
+		sprintf_s(str1, "[CQ:at,qq=%lld]\n你在当前群的线报为：", fromQQ);
+		string str2(str1);
+		while (p->next != nullptr) {
+			if (p->group == fromGroup && p->qq == fromQQ) {
+				str2.append("\n");
+				str2.append(p->key);
+			}
+			p = p->next;
+		}
+		CQ_sendGroupMsg(ac, fromGroup, str2.c_str());
+	}
 	/*if (fromGroup == 683750159) {
 		CQ_setGroupCard(ac, fromGroup, 1974416999, "442搞比利");
 	}*/
@@ -205,7 +267,7 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t msgId, int64_t fr
 /*
 * Type=4 讨论组消息
 */
-CQEVENT(int32_t, __eventDiscussMsg, 32)(int32_t subType, int32_t msgId, int64_t fromDiscuss, int64_t fromQQ, const char *msg, int32_t font) {
+CQEVENT(int32_t, __eventDiscussMsg, 32)(int32_t subType, int32_t msgId, int64_t fromDiscuss, int64_t fromQQ, const char* msg, int32_t font) {
 	if (is_NumInList(fromQQ, blockQQList))return EVENT_BLOCK;
 	return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
 }
@@ -273,7 +335,7 @@ CQEVENT(int32_t, __eventFriend_Add, 16)(int32_t subType, int32_t sendTime, int64
 * msg 附言
 * responseFlag 反馈标识(处理请求用)
 */
-CQEVENT(int32_t, __eventRequest_AddFriend, 24)(int32_t subType, int32_t sendTime, int64_t fromQQ, const char *msg, const char *responseFlag) {
+CQEVENT(int32_t, __eventRequest_AddFriend, 24)(int32_t subType, int32_t sendTime, int64_t fromQQ, const char* msg, const char* responseFlag) {
 
 	//CQ_setFriendAddRequest(ac, responseFlag, REQUEST_ALLOW, "");
 
@@ -287,7 +349,7 @@ CQEVENT(int32_t, __eventRequest_AddFriend, 24)(int32_t subType, int32_t sendTime
 * msg 附言
 * responseFlag 反馈标识(处理请求用)
 */
-CQEVENT(int32_t, __eventRequest_AddGroup, 32)(int32_t subType, int32_t sendTime, int64_t fromGroup, int64_t fromQQ, const char *msg, const char *responseFlag) {
+CQEVENT(int32_t, __eventRequest_AddGroup, 32)(int32_t subType, int32_t sendTime, int64_t fromGroup, int64_t fromQQ, const char* msg, const char* responseFlag) {
 
 	//if (subType == 1) {
 	//	CQ_setGroupAddRequestV2(ac, responseFlag, REQUEST_GROUPADD, REQUEST_ALLOW, "");
