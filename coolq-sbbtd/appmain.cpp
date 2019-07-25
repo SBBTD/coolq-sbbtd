@@ -144,7 +144,7 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t msgId, int64_t fr
 		//将“零”转换为'0'
 		if (i < msglen - 1 && msg[i] == -63 && msg[i + 1] == -29) {
 			msg[index++] = '0';
-			continue;
+			i++;  continue;
 		}
 		//判断http(s)开头链接
 		else if (i < msglen - 3 && msg[i] == 'h' && msg[i + 1] == 't' && msg[i + 2] == 't' && msg[i + 3] == 'p') {
@@ -315,8 +315,10 @@ CQEVENT(int32_t, __eventSystem_GroupMemberDecrease, 32)(int32_t subType, int32_t
 */
 CQEVENT(int32_t, __eventSystem_GroupMemberIncrease, 32)(int32_t subType, int32_t sendTime, int64_t fromGroup, int64_t fromQQ, int64_t beingOperateQQ) {
 	char str[tmpstr_Length];
-	sprintf_s(str, "欢迎 [CQ:at,qq=%lld] 加群！\nQQ：%lld\n管理：%lld", beingOperateQQ, beingOperateQQ, fromQQ);
-	CQ_sendGroupMsg(ac, fromGroup, str);
+	if (fromGroup != 723334097) {
+		sprintf_s(str, "欢迎 [CQ:at,qq=%lld] 加群！\nQQ：%lld\n管理：%lld", beingOperateQQ, beingOperateQQ, fromQQ);
+		CQ_sendGroupMsg(ac, fromGroup, str);
+	}
 	return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
 }
 
@@ -325,7 +327,7 @@ CQEVENT(int32_t, __eventSystem_GroupMemberIncrease, 32)(int32_t subType, int32_t
 * Type=201 好友事件-好友已添加
 */
 CQEVENT(int32_t, __eventFriend_Add, 16)(int32_t subType, int32_t sendTime, int64_t fromQQ) {
-	CQ_sendPrivateMsg(ac, fromQQ, "你好吖，发送 任务列表 跟我玩游戏吧！");
+	//CQ_sendPrivateMsg(ac, fromQQ, "你好吖，发送 任务列表 跟我玩游戏吧！");
 	return EVENT_IGNORE; //关于返回值说明, 见“_eventPrivateMsg”函数
 }
 
