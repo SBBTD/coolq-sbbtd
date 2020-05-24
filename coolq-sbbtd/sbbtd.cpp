@@ -2,7 +2,7 @@
 #include "sbbtd.h"
 
 /*检测文件是否存在并返回读文件流*/
-fstream * openfile(const char * filename)
+fstream* openfile(const char* filename)
 {
 	ofstream* ofs = new ofstream(filename, ios::app);
 	if (!ofs->is_open())return nullptr;
@@ -15,7 +15,7 @@ fstream * openfile(const char * filename)
 }
 
 /*读单列数字文件*/
-int readfile(fstream * stm, int64_t * list)
+int readfile(fstream* stm, int64_t* list)
 {
 	int n = 0;
 	while (!stm->eof()) {
@@ -30,7 +30,7 @@ int readfile(fstream * stm, int64_t * list)
 }
 
 /*生成写入文件流*/
-ofstream * writefile(const char * filename)
+ofstream* writefile(const char* filename)
 {
 	ofstream* ofs = new ofstream(filename, ios::app);
 	if (!ofs->is_open())return nullptr;
@@ -42,7 +42,7 @@ ofstream * writefile(const char * filename)
 }
 
 /*检测数字是否在某以-1结束的数字数组中*/
-bool is_NumInList(int64_t qq, int64_t * list)
+bool is_NumInList(int64_t qq, int64_t* list)
 {
 	int n = 0;
 	while (list[n] != -1)
@@ -80,15 +80,15 @@ monitorKey * getMonitor(monitorKeyList list, char * key, char* msg)
 3-黑名单词汇
 default-内部错误
 */
-int addXianbaoKeyword(monitorKeyList list, char * key, int64_t group, int64_t qq)
+int addXianbaoKeyword(monitorKeyList list, char* key, int64_t group, int64_t qq)
 {
-	if (strlen(key) > 16 || strlen(key) < 1)return 1;
+	if (strlen(key) > keyword_Length - 2 || strlen(key) < 1)return 1;
 	if (!strcmp(key, "全部"))return 3;
 	monitorKey* p = list;
-	while (p->next != nullptr) { 
+	while (p->next != nullptr) {
 		if (p->group == group && p->qq == qq) {
 			if (strstr(p->key, key)) {
-				strcpy(p->key, key); 
+				strcpy(p->key, key);
 				return 2;
 			}
 			else if (strstr(key, p->key)) {
@@ -120,9 +120,9 @@ int addXianbaoKeyword(monitorKeyList list, char * key, int64_t group, int64_t qq
 3-移除全部成功
 default-内部错误
 */
-int delXianbaoKeyword(monitorKeyList &list, char* key, int64_t group, int64_t qq, bool delall)
+int delXianbaoKeyword(monitorKeyList& list, char* key, int64_t group, int64_t qq, bool delall)
 {
-	if (strlen(key) > 16 || strlen(key) < 1)return 1;
+	if (strlen(key) > keyword_Length - 2 || strlen(key) < 1)return 1;
 	int rtn = 2;
 	auto p = list;
 	while (p->next != nullptr) {

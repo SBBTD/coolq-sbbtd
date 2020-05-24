@@ -45,6 +45,6 @@
     <Library Include="CQP.lib" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="com.sbbtd.sbbtd.sbbtd.json" />
+    <None Include="app.json" />
   </ItemGroup>
 </Project>

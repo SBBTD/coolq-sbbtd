@@ -6,6 +6,7 @@
 
 #include "stdafx.h"
 #include "string"
+#include "regex"
 #include "cqp.h"
 #include "appmain.h" //应用AppID等信息，请正确填写，否则酷Q可能无法加载
 #include "sbbtd.h"
@@ -61,7 +62,7 @@ CQEVENT(int32_t, __eventStartup, 0)() {
 	int n = 0;
 	monitorKeyList p = KeyList;
 	while (!filest->eof()) {
-		char key[20];
+		char key[keyword_Length];
 		int64_t group = 0;
 		int64_t qq = 0;
 		*filest >> key >> group >> qq;
@@ -169,19 +170,19 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t msgId, int64_t fr
 	if (is_NumInList(fromGroup, xbGroupList)) {
 		char groupName[20];
 		switch (fromGroup) {
-		//群名称，必须少于9个汉字
+			//群名称，必须少于9个汉字
 		case 945583797:strcpy_s(groupName, "哈佛大学线报"); break;
 		case 367943101:strcpy_s(groupName, "三表哥线报群"); break;
 		case 699788908:strcpy_s(groupName, "冷瞳活动分享"); break;
 		case 782790346:strcpy_s(groupName, "Ben笨线报群"); break;
 		case 970458851:strcpy_s(groupName, "King线报活动"); break;
 		case 740897949:strcpy_s(groupName, "疯子vip共享"); break;
-		case 707965661:strcpy_s(groupName, "debug用群"); break;
+		case 707965661:strcpy_s(groupName, "debug群"); break;
 		default:strcpy_s(groupName, to_string(fromGroup).c_str()); break;
 		}
 		auto p = KeyList;
 		while (p->next != nullptr) {
-			if (strstr(msg_f, p->key)) {
+			if ((p->key[0] == '/' && regex_search(msg_f, regex(p->key + 1))) || strstr(msg_f, p->key)) {
 				char str[tmpstr_Length];
 				sprintf_s(str, "[CQ:at,qq=%lld]\n线报“%s”来自%s\n%s", p->qq, p->key, groupName, msg);
 				CQ_sendGroupMsg(ac, p->group, str);
@@ -212,16 +213,16 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t msgId, int64_t fr
 	}
 
 	//线报关键词处理
-	char command_add[10] = "线报";
-	char command_del[10] = "移除线报";
-	char command_list[10] = "当前线报";
+	char command_add[] = "线报";
+	char command_del[] = "移除线报";
+	char command_list[] = "当前线报";
 	if (strstr(msg, command_add) == msg) {//添加线报
 		char str[tmpstr_Length];
 		int t = addXianbaoKeyword(KeyList, msg + strlen(command_add), fromGroup, fromQQ);
 		saveXianbaoKeyword(KeyList);
 		switch (t) {
 		case 0:sprintf_s(str, "[CQ:at,qq=%lld]\n已添加线报关键词“%s”，将转发线报至当前群，并通知QQ", fromQQ, msg + strlen(command_add)); break;
-		case 1:sprintf_s(str, "添加线报关键词失败，应为汉字1至8个"); break;
+		case 1:sprintf_s(str, "添加线报失败，长度应为1至38字节，一个汉字占2字节"); break;
 		case 2:sprintf_s(str, "与现有关键词有包含关系，已更新为较短关键词"); break;
 		case 3:sprintf_s(str, "添加失败，黑名单词汇"); break;
 		default:sprintf_s(str, "添加线报关键词失败，内部错误"); break;
@@ -236,8 +237,8 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t msgId, int64_t fr
 		saveXianbaoKeyword(KeyList);
 		switch (t) {
 		case 0:sprintf_s(str, "[CQ:at,qq=%lld]\n已移除你在当前群的线报关键词“%s”", fromQQ, msg + strlen(command_del)); break;
-		case 1:sprintf_s(str, "移除线报关键词失败，应为汉字1至8个"); break;
-		case 2:sprintf_s(str, "未能找到你在当前群内追踪的线报关键词“%s”，可尝试发送“移除线报全部”移除你在当前群内的所有追踪词", msg + strlen(command_del)); break;
+		case 1:sprintf_s(str, "移除线报失败，长度应为1至38个字节，一个汉字占2字节"); break;
+		case 2:sprintf_s(str, "未能找到你在当前群内追踪的线报关键词“%s”，可尝试发送“当前线报”来查询，或发送“移除线报全部”移除你在当前群内的所有追踪词", msg + strlen(command_del)); break;
 		case 3:sprintf_s(str, "[CQ:at,qq=%lld]\n已移除你在当前群的全部线报关键词", fromQQ); break;
 		default:sprintf_s(str, "移除线报关键词失败，内部错误"); break;
 		}
