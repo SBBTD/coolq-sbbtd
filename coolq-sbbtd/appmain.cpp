@@ -136,10 +136,10 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t msgId, int64_t fr
 		if (delhalfchar && msg[i] < 0) {
 			//判断淘口令结束的￥符号
 			if (i < msglen - 1 && msg[i] == -93 && msg[i + 1] == -92) {
-				delhalfchar = false;
-				i++; continue;
+				i++;
 			}
 			delhalfchar = false;
+			continue;
 		}
 		if (delhalfchar)continue;
 		//将“零”转换为'0'
@@ -159,7 +159,7 @@ CQEVENT(int32_t, __eventGroupMsg, 36)(int32_t subType, int32_t msgId, int64_t fr
 		}
 		//大写转小写
 		if (msg[i] >= 'A' && msg[i] <= 'Z') {
-			msg_f[index++] = msg[i] + 'a' - 'A';
+			msg_f[index++] = msg[i] - 'A' + 'a';
 			continue;
 		}
 		//其他字符保持原样
