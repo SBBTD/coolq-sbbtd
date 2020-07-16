@@ -1,4 +1,4 @@
-### 已迁移至coolq-sbbtd-go项目，现有bug不再修复
+### 已迁移至coolq-sbbtd-golang项目，现有bug不再修复
 
 自用酷Q插件简介
 --------
