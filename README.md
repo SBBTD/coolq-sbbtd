@@ -1,4 +1,8 @@
-### 已迁移至coolq-sbbtd-golang项目，现有bug不再修复
+## 已迁移至[coolq-sbbtd-golang](https://github.com/SBBTD/coolq-sbbtd-golang)
+
+## 已迁移至[coolq-sbbtd-golang](https://github.com/SBBTD/coolq-sbbtd-golang)
+
+## 已迁移至[coolq-sbbtd-golang](https://github.com/SBBTD/coolq-sbbtd-golang)
 
 自用酷Q插件简介
 --------
